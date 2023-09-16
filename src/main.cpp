@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
 
-#include "shader_reader.h"
-#include "main_program.h"
-#include "shape.h"
+#include "../include/shader_reader.h"
+#include "../include/main_program.h"
+#include "../include/shape.h"
 
 using namespace std;
 
@@ -21,9 +21,7 @@ string shader_file_path = "const/data/";
 
 // cd cmake .. && make && ./test
 
-int main() {    
-    
-    
+int main() {        
     GLFWwindow* window = StartWindow();
     if (window == nullptr) return -1;
     LOG("Window Loaded");
