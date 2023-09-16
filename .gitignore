@@ -11,6 +11,7 @@ bin/
 
 # Ignore sensitive or private data files
 config.ini
+config.json
 secret.key
 
 # Ignore user-specific files
