@@ -1,0 +1,21 @@
+# Ignore build artifacts and compiled files
+build/
+bin/
+*.exe
+*.o
+*.out
+
+# Ignore editor/IDE-specific files
+.vscode/
+.idea/
+
+# Ignore sensitive or private data files
+config.ini
+secret.key
+
+# Ignore user-specific files
+user_settings.json
+
+# Ignore log and temporary files
+*.log
+tmp/
