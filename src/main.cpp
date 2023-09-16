@@ -22,6 +22,8 @@ string shader_file_path = "const/data/";
 // cd cmake .. && make && ./test
 
 int main() {    
+    
+    
     GLFWwindow* window = StartWindow();
     if (window == nullptr) return -1;
     LOG("Window Loaded");

@@ -1,5 +1,6 @@
 #include "main_program.h"
 #include "fps_counter.h"
+#include "appconfig.h"
 #include <unistd.h>
 #include <iostream>
 #include <filesystem>
@@ -12,17 +13,22 @@
 
 #ifdef CMAKE_BUILD
 const string shader_file_path = "../const/";
+const string config_file_path = "../";
 #else 
 const string shader_file_path = "const/";
+const string config_file_path = "/";
 #endif
 
 GLFWwindow* StartWindow() {
+    AppConfig config;
+    config.load(config_file_path + "config.json");
+    
     if (!glfwInit()) {
         LOG("ERROR: could not start GLFW3\n");
         return nullptr;
     }
 
-    GLFWwindow* window = glfwCreateWindow(500, 500, "Hello GL", NULL, NULL);
+    GLFWwindow* window = glfwCreateWindow(config.windowWidth, config.windowHeight, "Hello GL", NULL, NULL);
     if (!window) {
         LOG("ERROR: could not open window with GLFW3\n");
         glfwTerminate();
