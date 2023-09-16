@@ -1,4 +1,4 @@
-#include "fps_counter.h"
+#include "../../include/fps_counter.h"
 #include <iostream>
 
 void update_fps_counter(GLFWwindow* window) {

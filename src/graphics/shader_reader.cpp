@@ -1,4 +1,4 @@
-#include "shader_reader.h"
+#include "../../include/shader_reader.h"
 
 #ifndef LOG
 #define LOG(x) cout << x << endl;

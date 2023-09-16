@@ -20,3 +20,5 @@ user_settings.json
 # Ignore log and temporary files
 *.log
 tmp/
+test
+*.dir

@@ -1,10 +1,9 @@
-#include "appconfig.h"
+#include "../../include/appconfig.h"
 #include <iostream>
 #include <fstream>
 #include <nlohmann/json.hpp>
 
 AppConfig::AppConfig() : windowWidth(800), windowHeight(600) {
-
 }
 
 void AppConfig::load(const string& config_file) {

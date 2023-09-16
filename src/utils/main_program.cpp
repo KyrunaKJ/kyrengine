@@ -1,6 +1,6 @@
-#include "main_program.h"
-#include "fps_counter.h"
-#include "appconfig.h"
+#include "../../include/main_program.h"
+#include "../../include/fps_counter.h"
+#include "../../include/appconfig.h"
 #include <unistd.h>
 #include <iostream>
 #include <filesystem>
@@ -16,7 +16,7 @@ const string shader_file_path = "../const/";
 const string config_file_path = "../";
 #else 
 const string shader_file_path = "const/";
-const string config_file_path = "/";
+const string config_file_path = "";
 #endif
 
 GLFWwindow* StartWindow() {
