@@ -12,6 +12,7 @@ struct Shape {
     GLenum mode;
     vector<float> vertices;
 
+    Shape(const string& file_path) : vao(0) { load_vertices_from_file(file_path); }
     Shape(GLenum mode) : vao(0), mode(mode) {}
     Shape(GLenum mode, vector<float> vertices) : vao(0), mode(mode), vertices(vertices) {}
 

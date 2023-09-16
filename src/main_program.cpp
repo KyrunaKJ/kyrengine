@@ -1,9 +1,14 @@
 #include "main_program.h"
+#include "fps_counter.h"
 #include <unistd.h>
+#include <iostream>
+#include <filesystem>
 
 #ifndef LOG
 #define LOG(x) cout << x << endl;
 #endif
+
+#define DEBUG 1
 
 #ifdef CMAKE_BUILD
 const string shader_file_path = "../const/";
@@ -41,12 +46,9 @@ GLFWwindow* StartWindow() {
 
 GLuint LoadShaders() {
     const string vertex_shader_path = shader_file_path + "shader_vs.glsl";
-    LOG(vertex_shader_path);
+
     const string vertexShader = ShaderReader(shader_file_path + "shader_vs.glsl").source;    
     const string fragShader = ShaderReader(shader_file_path + "shader_fs.glsl").source;
-
-    char buf[128];
-    LOG(getcwd(buf, sizeof(buf)));
 
     GLchar* vertex_shader = (GLchar*)vertexShader.c_str();
     GLchar* frag_shader = (GLchar*)fragShader.c_str();    
@@ -65,4 +67,74 @@ GLuint LoadShaders() {
     glLinkProgram(shader_program);
 
     return shader_program;
+}
+
+GLenum det_shape_mode(vector<float>& vertices) {
+    if (vertices.size() % 6 == 0) {
+        LOG("Making square");
+        return GL_LINE_STRIP;
+    } else if (vertices.size() % 9 == 0) {
+        LOG("Making triangle");
+        return GL_TRIANGLES; 
+    } else {
+        // Handle unsupported vertex count
+        throw std::runtime_error("Unsupported number of vertices");
+    }
+}
+
+vector<string> get_dir_files(string& dir_path) {
+    std::vector<std::string> file_names;
+    try {
+        for (const auto& entry : filesystem::directory_iterator(dir_path)) {
+            if (entry.is_regular_file()) {
+                file_names.push_back(entry.path().filename().string());
+            }
+        }
+    } catch (const filesystem::filesystem_error& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+    return file_names;
+}
+
+void InitializeShapes(vector<Shape>& shapes, vector<string>& files) {
+    for (string str : files) {
+        Shape shape(shader_file_path + "data/" + str);
+        shape.mode = det_shape_mode(shape.vertices);
+        shape.create_vbo();
+        shapes.push_back(shape);
+    }
+}
+
+void RenderShapes(const vector<Shape>& shapes, GLuint shader_program) {
+    // loop through shapes
+    for (const auto& shape : shapes) {
+        glUseProgram(shader_program);
+        glBindVertexArray(shape.vao);
+        glDrawArrays(shape.mode, 0, shape.vertices.size() / 3);
+    }
+}
+
+void RunMainLoop(GLFWwindow* window, const vector<Shape>& shapes, GLuint shader_program) {
+    // UPDATE LOOP
+    while(!glfwWindowShouldClose(window)) {
+
+        if (DEBUG) {
+            update_fps_counter(window);
+        }
+        // wipe the drawing surface clear
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        RenderShapes(shapes, shader_program);
+
+        // put the stuff we've been drawing onto the display
+        glfwSwapBuffers(window);
+
+        // update other events like input handling
+        glfwPollEvents();
+
+        if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
+            glfwSetWindowShouldClose(window, 1);
+        }
+
+    };
 }
