@@ -25,6 +25,7 @@ add_executable(test ${SOURCES})
 find_package(OpenGL REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(glm REQUIRED)
 
 target_link_libraries(test glfw GLEW /usr/lib/x86_64-linux-gnu/libGL.so.1)
 target_include_directories(test PRIVATE ${CMAKE_SOURCE_DIR}/include)

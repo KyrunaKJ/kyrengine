@@ -1,6 +1,9 @@
 #include "../../include/main_program.h"
 #include "../../include/fps_counter.h"
 #include "../../include/appconfig.h"
+#include "../../include/shape_instance.h"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/glm.hpp>
 #include <unistd.h>
 #include <iostream>
 #include <filesystem>
@@ -51,8 +54,6 @@ GLFWwindow* StartWindow() {
 }
 
 GLuint LoadShaders() {
-    const string vertex_shader_path = shader_file_path + "shader_vs.glsl";
-
     const string vertexShader = ShaderReader(shader_file_path + "shader_vs.glsl").source;    
     const string fragShader = ShaderReader(shader_file_path + "shader_fs.glsl").source;
 
@@ -103,24 +104,71 @@ vector<string> get_dir_files(string& dir_path) {
 }
 
 void InitializeShapes(vector<Shape>& shapes, vector<string>& files) {
+    AppConfig config;
+    config.load(config_file_path + "config.json");
+    
     for (string str : files) {
-        Shape shape(shader_file_path + "data/" + str);
+        Shape shape(shader_file_path + "data/" + str, config);
         shape.mode = det_shape_mode(shape.vertices);
         shape.create_vbo();
         shapes.push_back(shape);
     }
 }
 
-void RenderShapes(const vector<Shape>& shapes, GLuint shader_program) {
+// Function to calculate the greatest common divisor (GCD) of two numbers
+float gcd(float a, float b) {
+    while (std::abs(b) > 0.001f) {
+        float temp = b;
+        b = std::fmod(a, b);
+        a = temp;
+    }
+    return a;
+}
+
+void aspectRatioToRatio(float width, float height, float& x, float& y) {
+    float divisor = gcd(width, height);
+    x = width / divisor;
+    y = height / divisor;
+}
+
+void RenderShapes(vector<ShapeInstance>& shapes, GLuint shader_program, float width, float height) {
+    GLuint modelMatrixID = glGetUniformLocation(shader_program, "modelMatrix");    
+    GLuint projectionMatrixID = glGetUniformLocation(shader_program, "projectionMatrix");
+
+    float x, y;
+    aspectRatioToRatio(width, height, x, y);
+
+    LOG(x);
+    LOG(y);
+
+    glm::mat4 projection = glm::ortho(-x, x, -y, y, -1.0f, 1.0f);
+
+    glUseProgram(shader_program);
+
+    glUniformMatrix4fv(projectionMatrixID, 1, GL_FALSE, &projection[0][0]);
+
     // loop through shapes
     for (const auto& shape : shapes) {
-        glUseProgram(shader_program);
-        glBindVertexArray(shape.vao);
-        glDrawArrays(shape.mode, 0, shape.vertices.size() / 3);
+        glBindVertexArray(shape.shape.vao);
+
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), shape.position);
+
+        glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &model[0][0]);
+
+        glDrawArrays(shape.shape.mode, 0, shape.shape.vertices.size() / 3);
     }
 }
 
-void RunMainLoop(GLFWwindow* window, const vector<Shape>& shapes, GLuint shader_program) {
+void RunMainLoop(GLFWwindow* window, vector<ShapeInstance>& shapes, GLuint shader_program) {
+    glUseProgram(shader_program);
+
+    AppConfig config;
+    config.load(config_file_path + "config.json");
+    float aspectratio = (float)config.windowWidth / (float)config.windowHeight;    
+    LOG(aspectratio);
+
+    glViewport(0, 0, config.windowWidth, config.windowHeight);
+    
     // UPDATE LOOP
     while(!glfwWindowShouldClose(window)) {
 
@@ -130,7 +178,7 @@ void RunMainLoop(GLFWwindow* window, const vector<Shape>& shapes, GLuint shader_
         // wipe the drawing surface clear
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        RenderShapes(shapes, shader_program);
+        RenderShapes(shapes, shader_program, config.windowWidth, config.windowHeight);
 
         // put the stuff we've been drawing onto the display
         glfwSwapBuffers(window);
@@ -141,6 +189,5 @@ void RunMainLoop(GLFWwindow* window, const vector<Shape>& shapes, GLuint shader_
         if (GLFW_PRESS == glfwGetKey(window, GLFW_KEY_ESCAPE)) {
             glfwSetWindowShouldClose(window, 1);
         }
-
     };
 }

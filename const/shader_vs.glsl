@@ -1,5 +1,13 @@
 #version 400
-in vec3 vp;
+
+layout(location = 0) in vec3 vp;
+
+uniform mat4 projectionMatrix;
+uniform mat4 modelMatrix;
+
 void main() {
-    gl_Position = vec4(vp, 1.0);
-};
+    
+    mat4 MVP = projectionMatrix * modelMatrix;
+
+    gl_Position = MVP * vec4(vp, 1.0);
+}
