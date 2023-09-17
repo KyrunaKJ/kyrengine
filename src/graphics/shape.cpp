@@ -1,5 +1,6 @@
 #include "../../include/shape.h"
 #include <vector>
+#include <limits>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -7,19 +8,30 @@
 
 using namespace std;
 
-void Shape::load_vertices_from_file(const string& file_path) {
+#ifndef LOG
+#define LOG(x) cout << x << endl;
+#endif
+
+void Shape::load_vertices_from_file(const string& file_path, AppConfig& config) {
     ifstream file(file_path);
     if (!file.is_open()) {
         throw runtime_error("Failed to open file: " + file_path);
     }
     string line;
+    float aspectratio = static_cast<float>(config.windowWidth) / static_cast<float>(config.windowHeight);
+
     while (getline(file, line)) {
         istringstream iss(line);
-        float vertex_value;
-        while (iss >> vertex_value) {
-            vertices.push_back(vertex_value);
+        float x, y, z;
+
+        if (iss >> x >> y >> z) {
+                       
+            vertices.push_back(x);
+            vertices.push_back(y);
+            vertices.push_back(z);
         }
     }
+
     file.close();
 }
 
