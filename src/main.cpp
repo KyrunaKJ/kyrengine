@@ -34,12 +34,16 @@ int main() {
     InitializeShapes(shapes, files);
     LOG("Shapes Loaded");    
 
-    vector<ShapeInstance> render_shapes;
-    ShapeManager sm(render_shapes, shapes);
+    vector<ShapeInstance> render_shapes, render_shapes_two;
+    ShapeManager sm(render_shapes, shapes, 0.5f), sm_two(render_shapes_two, shapes, 1.0f);
 
     // Custom drawing code
-    sm.create_square_grid(3, 1.0f);
-    LOG("Shapes Created");
+    sm.create_square_grid(4);
+    sm.create_triangle_grid(2);
+    //sm.create_2d_square_array(3, 2, -1.0f);
+    //sm.create_2d_triangle_array(3, 2);
+
+    LOG("Shapes Created");    
 
     GLuint base_shader_program = LoadShaders();
     LOG("Shaders Loaded"); 
