@@ -138,9 +138,6 @@ void RenderShapes(vector<ShapeInstance>& shapes, GLuint shader_program, float wi
     float x, y;
     aspectRatioToRatio(width, height, x, y);
 
-    LOG(x);
-    LOG(y);
-
     glm::mat4 projection = glm::ortho(-x, x, -y, y, -1.0f, 1.0f);
 
     glUseProgram(shader_program);
@@ -164,8 +161,7 @@ void RunMainLoop(GLFWwindow* window, vector<ShapeInstance>& shapes, GLuint shade
 
     AppConfig config;
     config.load(config_file_path + "config.json");
-    float aspectratio = (float)config.windowWidth / (float)config.windowHeight;    
-    LOG(aspectratio);
+    float aspectratio = (float)config.windowWidth / (float)config.windowHeight;
 
     glViewport(0, 0, config.windowWidth, config.windowHeight);
     

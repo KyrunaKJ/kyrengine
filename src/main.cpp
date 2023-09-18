@@ -6,6 +6,7 @@
 #include "../include/main_program.h"
 #include "../include/shape.h"
 #include "../include/shape_instance.h"
+#include "../include/shape_manager.h"
 
 using namespace std;
 
@@ -33,17 +34,17 @@ int main() {
     InitializeShapes(shapes, files);
     LOG("Shapes Loaded");    
 
-    vector<ShapeInstance> renderShapes;
-    for (int i = 0; i < 2; i++) {
-        glm::vec3 pos(i * 1.1f, 0.0f, 0.0f);
-        ShapeInstance si(shapes[1], pos);
-        renderShapes.push_back(si);
-    }
+    vector<ShapeInstance> render_shapes;
+    ShapeManager sm(render_shapes, shapes);
+
+    // Custom drawing code
+    sm.create_square_grid(3, 1.0f);
+    LOG("Shapes Created");
 
     GLuint base_shader_program = LoadShaders();
-    LOG("Shaders Loaded");    
-    
-    RunMainLoop(window, renderShapes, base_shader_program);
+    LOG("Shaders Loaded"); 
+
+    RunMainLoop(window, render_shapes, base_shader_program);
 
     glfwTerminate();
     LOG("Window Closed");
