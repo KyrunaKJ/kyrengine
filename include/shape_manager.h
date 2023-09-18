@@ -29,6 +29,16 @@ public:
 
     void create_triangle_grid(int, float = 1.0f);
 
+    void create_circle(float, float = 1.0f);
+
+    void create_horizontal_circle_array(int, float = 1.0f);
+
+    void create_vertical_circle_array(int, float = 1.0f);
+
+    void create_2d_circle_array(int, int, float = 1.0f);
+
+    void create_circle_grid(int, float = 1.0f);
+
     const vector<ShapeInstance>& get_shapes() const; 
 
 private:

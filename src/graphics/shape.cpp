@@ -24,8 +24,7 @@ void Shape::load_vertices_from_file(const string& file_path, AppConfig& config) 
         istringstream iss(line);
         float x, y, z;
 
-        if (iss >> x >> y >> z) {
-                       
+        if (iss >> x >> y >> z) {                       
             vertices.push_back(x);
             vertices.push_back(y);
             vertices.push_back(z);

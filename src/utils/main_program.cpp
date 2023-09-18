@@ -77,16 +77,23 @@ GLuint LoadShaders() {
 }
 
 GLenum det_shape_mode(vector<float>& vertices) {
-    if (vertices.size() % 6 == 0) {
+    int vertex_count = vertices.size();
+    if (vertex_count > 35) vertex_count -= 9;
+    vertex_count /= 3;
+
+    if (vertex_count % 12 == 0) {
+        LOG("Making circle");
+        return GL_TRIANGLE_FAN; 
+    } else if (vertex_count % 4 == 0) {
         LOG("Making square");
-        return GL_LINE_STRIP;
-    } else if (vertices.size() % 9 == 0) {
+        return GL_LINE_LOOP;
+    } else if (vertex_count % 3 == 0) {
         LOG("Making triangle");
         return GL_TRIANGLES; 
     } else {
         // Handle unsupported vertex count
         throw std::runtime_error("Unsupported number of vertices");
-    }
+    }    
 }
 
 vector<string> get_dir_files(string& dir_path) {
