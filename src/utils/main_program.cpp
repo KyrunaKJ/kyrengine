@@ -149,6 +149,8 @@ void RenderShapes(vector<ShapeInstance>& shapes, GLuint shader_program, float wi
         glBindVertexArray(shape.shape.vao);
 
         glm::mat4 model = glm::translate(glm::mat4(1.0f), shape.position);
+        
+        model = glm::scale(model, shape.scale);
 
         glUniformMatrix4fv(modelMatrixID, 1, GL_FALSE, &model[0][0]);
 

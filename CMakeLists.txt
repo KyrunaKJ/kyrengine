@@ -19,7 +19,7 @@ endforeach()
 
 add_definitions(-DCMAKE_BUILD)
 
-add_executable(test ${SOURCES})
+add_executable(testc ${SOURCES})
 
 # Link GLFW, GLEW, and any other necessary libraries
 find_package(OpenGL REQUIRED)
@@ -27,5 +27,5 @@ find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(glm REQUIRED)
 
-target_link_libraries(test glfw GLEW /usr/lib/x86_64-linux-gnu/libGL.so.1)
-target_include_directories(test PRIVATE ${CMAKE_SOURCE_DIR}/include)
+target_link_libraries(testc glfw GLEW /usr/lib/x86_64-linux-gnu/libGL.so.1)
+target_include_directories(testc PRIVATE ${CMAKE_SOURCE_DIR}/include)

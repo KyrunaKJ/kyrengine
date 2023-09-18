@@ -7,21 +7,34 @@
 
 class ShapeManager {
 public:
-    ShapeManager(vector<ShapeInstance>&, vector<Shape>&);
+    ShapeManager(vector<ShapeInstance>&, vector<Shape>&, float);
 
-    void create_square(float, float);
+    void create_square(float, float = 1.0f);
 
-    void create_1d_square_array(int, float);
+    void create_horizontal_square_array(int, float = 1.0f);
 
-    void create_2d_square_array(int, int, float);
+    void create_vertical_square_array(int, float = 1.0f);
 
-    void create_square_grid(int, float);
+    void create_2d_square_array(int, int, float = 1.0f);
+
+    void create_square_grid(int, float = 1.0f);
+
+    void create_triangle(float, float = 1.0f);
+
+    void create_horizontal_triangle_array(int, float = 1.0f);
+
+    void create_vertical_triangle_array(int, float = 1.0f);
+
+    void create_2d_triangle_array(int, int, float = 1.0f);
+
+    void create_triangle_grid(int, float = 1.0f);
 
     const vector<ShapeInstance>& get_shapes() const; 
 
 private:
     vector<ShapeInstance>& shapes_;
     vector<Shape>& shape_refs_;
+    float scale_;
 };
 
 #endif
