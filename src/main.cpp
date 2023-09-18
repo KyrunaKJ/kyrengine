@@ -35,13 +35,18 @@ int main() {
     LOG("Shapes Loaded");    
 
     vector<ShapeInstance> render_shapes, render_shapes_two;
-    ShapeManager sm(render_shapes, shapes, 0.5f), sm_two(render_shapes_two, shapes, 1.0f);
+    ShapeManager sm(render_shapes, shapes, 0.5f), sm_two(render_shapes, shapes, .25f), sm_three(render_shapes, shapes, 0.5f);
 
     // Custom drawing code
     sm.create_square_grid(4);
-    sm.create_triangle_grid(2);
-    //sm.create_2d_square_array(3, 2, -1.0f);
-    //sm.create_2d_triangle_array(3, 2);
+    sm_two.create_circle_grid(2, 6.0f);
+    // sm_three.create_triangle_grid(4);
+
+    // sm.create_vertical_circle_array(4);
+    // sm.create_circle_grid(3);
+    // sm.create_triangle_grid(2);
+    // sm.create_2d_square_array(3, 2, -1.0f);
+    // sm.create_2d_triangle_array(3, 2);
 
     LOG("Shapes Created");    
 

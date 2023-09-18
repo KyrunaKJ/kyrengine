@@ -64,4 +64,35 @@ void ShapeManager::create_triangle_grid(int size, float spacing) {
     create_2d_triangle_array(size, size, spacing);
 }
 
+void ShapeManager::create_circle(float x, float y) {
+    ShapeInstance si(shape_refs_[2], glm::vec3(x, y, 0.0f));
+    si.scale = glm::vec3(scale_);
+    si.position *= si.scale;
+    shapes_.push_back(si);
+}
+
+void ShapeManager::create_horizontal_circle_array(int count, float spacing) {
+    for (int i = 0; i < count; i++) {
+        create_circle(i * spacing, 0.0f);
+    }
+}
+
+void ShapeManager::create_vertical_circle_array(int count, float spacing) {
+    for (int i = 0; i < count; i++) {
+        create_circle(0.0f, -i * spacing);
+    }
+}
+
+void ShapeManager::create_2d_circle_array(int rows, int columns, float spacing) {
+    for(int i = 0; i < rows ; i++) {
+        for(int j = 0; j < columns ; j++) {
+            create_circle(j * spacing, -i * spacing);
+        }
+    }
+}
+
+void ShapeManager::create_circle_grid(int size, float spacing) {
+    create_2d_circle_array(size, size, spacing);
+}
+
 const vector<ShapeInstance>& ShapeManager::get_shapes() const { return shapes_; }
