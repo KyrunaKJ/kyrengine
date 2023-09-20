@@ -35,25 +35,26 @@ int main() {
     LOG("Shapes Loaded");    
 
     vector<ShapeInstance> render_shapes, render_shapes_two;
-    ShapeManager sm(render_shapes, shapes, 0.5f), sm_two(render_shapes, shapes, .25f), sm_three(render_shapes, shapes, 0.5f);
+    ShapeManager sm(render_shapes, shapes, 0.5f), sm_two(render_shapes_two, shapes, .25f);
 
     // Custom drawing code
     sm.create_square_grid(4);
     sm_two.create_circle_grid(2, 6.0f);
+
     // sm_three.create_triangle_grid(4);
 
-    // sm.create_vertical_circle_array(4);
-    // sm.create_circle_grid(3);
-    // sm.create_triangle_grid(2);
-    // sm.create_2d_square_array(3, 2, -1.0f);
-    // sm.create_2d_triangle_array(3, 2);
+    vector<vector<ShapeInstance>> all_shapes;
+    all_shapes.push_back(render_shapes);
+    all_shapes.push_back(render_shapes_two);
 
     LOG("Shapes Created");    
 
-    GLuint base_shader_program = LoadShaders();
+    vector<GLuint> shader_programs = LoadShaders();
     LOG("Shaders Loaded"); 
 
-    RunMainLoop(window, render_shapes, base_shader_program);
+    glEnable(GL_TEXTURE_2D);
+
+    RunMainLoop(window, all_shapes, shader_programs);
 
     glfwTerminate();
     LOG("Window Closed");

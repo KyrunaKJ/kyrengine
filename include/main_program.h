@@ -10,9 +10,11 @@
 
 vector<string> get_dir_files(string&);
 GLFWwindow* StartWindow();
-GLuint LoadShaders();
+vector<GLuint> LoadShaders();
 void InitializeShapes(vector<Shape>&, vector<string>&);
-void RenderShapes(vector<ShapeInstance>&, GLuint, float, float);
-void RunMainLoop(GLFWwindow*, vector<ShapeInstance>&, GLuint);
+void RenderShapes(vector<vector<ShapeInstance>> &, vector<GLuint>&, float, float);
+void RenderSimpleColorShapes(GLuint, vector<ShapeInstance>&, float, float);
+void RenderTextureShapes(GLuint, vector<ShapeInstance>&, float, float);
+void RunMainLoop(GLFWwindow*, vector<vector<ShapeInstance>> &, vector<GLuint>&);
 
 #endif

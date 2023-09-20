@@ -8,17 +8,25 @@
 
 using namespace std;
 
+struct Verts {
+    vector<float> position;
+    vector<float> uv;
+    vector<float> color;
+    vector<float> bone;
+};
+
 struct Shape {
     GLuint vao;
     GLenum mode;
-    vector<float> vertices;
+    Verts vertices;
 
     Shape(const string& file_path, AppConfig& config) : vao(0) { load_vertices_from_file(file_path, config); }
     Shape(GLenum mode) : vao(0), mode(mode) {}
-    Shape(GLenum mode, vector<float> vertices) : vao(0), mode(mode), vertices(vertices) {}
 
     void load_vertices_from_file(const string&, AppConfig&);
+    void load_texture_vertices_from_file(const string&, AppConfig&);
     void create_vbo();   
 };
+
 
 #endif
