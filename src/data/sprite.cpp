@@ -1,30 +1,43 @@
 #include "../../include/sprite.h"
 
-GLuint Sprite::get_vao() {
+void Sprite::render() {
+    glUseProgram(shader_program);
+    glBindVertexArray(vao);
+
+    GLuint mvp_location = glGetUniformLocation(shader_program, "mvp");
+    glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(mvp));
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glDrawElements(GL_TRIANGLES, vertices.indices.size(), GL_UNSIGNED_INT, 0);
+
+    glBindVertexArray(0);
+}
+
+GLuint& Sprite::get_vao() {
     return vao;
 }
 	
-GLuint Sprite::get_vbo() {
+GLuint& Sprite::get_vbo() {
     return vbo;
 }
 	
-GLuint Sprite::get_vbot() {
+GLuint& Sprite::get_vbot() {
     return vbot;
 }
 	
-GLuint Sprite::get_ebo() {
+GLuint& Sprite::get_ebo() {
     return ebo;
 }
 	
-GLuint Sprite::get_texture() {
+GLuint& Sprite::get_texture() {
     return texture;
 }
 	
-GLuint Sprite::get_shader_program() {
+GLuint& Sprite::get_shader_program() {
     return shader_program;
 }
 
-Verts Sprite::get_verts() {
+Verts& Sprite::get_verts() {
     return vertices;
 }
 	

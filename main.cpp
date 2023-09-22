@@ -10,11 +10,6 @@
 #define INFOLOG(x, y) std::cerr << x << y << std::endl;
 #endif
 
-struct AppConfig {
-        int window_width;
-        int window_height;
-};
-
 GLFWwindow* start_window(AppConfig app_config) {    
     glfwInit();
     glfwWindowHint(GLFW_ALPHA_BITS, 8); // 8 bits for alpha channel
@@ -72,28 +67,28 @@ GLuint load_shader_program(GLuint& vertex_shader, GLuint& frag_shader, std::stri
     return shader_program;
 }
 
-void load_vertices(Verts& verts, GLuint& vao, GLuint& vbo, GLuint& vbot, GLuint& ebo) {
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+void load_vertices(Sprite& sprite) {
+    glGenVertexArrays(1, &sprite.get_vao());
+    glBindVertexArray(sprite.get_vao());
 
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, verts.vertices.size()* sizeof(float), verts.vertices.data(), GL_STATIC_DRAW);
+    glGenBuffers(1, &sprite.get_vbo());
+    glBindBuffer(GL_ARRAY_BUFFER, sprite.get_vbo());
+    glBufferData(GL_ARRAY_BUFFER, sprite.get_verts().vertices.size()* sizeof(float), sprite.get_verts().vertices.data(), GL_STATIC_DRAW);
     // Configure vertex attributes for position (vbo)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glGenBuffers(1, &vbot);
-    glBindBuffer(GL_ARRAY_BUFFER, vbot);
-    glBufferData(GL_ARRAY_BUFFER, verts.tex_coords.size()* sizeof(float), verts.tex_coords.data(), GL_STATIC_DRAW);
-    LOG(verts.tex_coords.size());
+    glGenBuffers(1, &sprite.get_vbot());
+    glBindBuffer(GL_ARRAY_BUFFER, sprite.get_vbot());
+    glBufferData(GL_ARRAY_BUFFER, sprite.get_verts().tex_coords.size()* sizeof(float), sprite.get_verts().tex_coords.data(), GL_STATIC_DRAW);
+    LOG(sprite.get_verts().tex_coords.size());
     // Configure vertex attributes for texture coordinates (vbot)
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
 
-    glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(verts.indices), verts.indices.data(), GL_STATIC_DRAW);
+    glGenBuffers(1, &sprite.get_ebo());
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, sprite.get_ebo());
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(sprite.get_verts().indices), sprite.get_verts().indices.data(), GL_STATIC_DRAW);
 
     glBindVertexArray(0);
 }
@@ -121,7 +116,27 @@ void load_image(const char* image_path, GLuint& texture) {
     stbi_image_free(data);
 }
 
-void run_main_loop(AppConfig& app_config, GLFWwindow* window, GLuint shader_program, Verts& verts, GLuint& vao, GLuint& ebo, GLuint& texture) {
+
+void run_main_loop(GLFWwindow* window, std::vector<Sprite>& sprites) {
+    while(!glfwWindowShouldClose(window)) {
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        for(Sprite sprite : sprites) {            
+            sprite.render();
+        }
+
+        GLenum error = glGetError();
+        if (error != GL_NO_ERROR) {
+            std::cerr << "OpenGL error: " << error << std::endl;
+        }
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+}    
+
+
+void run_main_loop(AppConfig& app_config, GLFWwindow* window, GLuint& shader_program, Verts& verts, GLuint& vao, GLuint& ebo, GLuint& texture) {
     int gcd = 1;
 
     for (int i = 1; i <= app_config.window_width && i <= app_config.window_height; ++i) {
@@ -187,30 +202,36 @@ int main() {
     LOG("STARTED WINDOW");
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     std::string vs = read_shader_file("shaders/shader_vs.glsl");
+    std::string bfs = read_shader_file("shaders/shader_fs_backup.glsl");
     std::string fs = read_shader_file("shaders/shader_fs.glsl");
-    Sprite sprite;
     LOG("LOADED SHADERS");
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    GLuint vertex_shader, frag_shader, shader_program;
-    shader_program = load_shader_program(vertex_shader, frag_shader, vs, fs);    
+    Sprite base_sprite(app_config, 0.0f, 0.0f);    
+    Sprite backup_sprite(app_config, 0.0f, 0.0f);
+    GLuint vertex_shader, frag_shader, b_frag_shader;
+    backup_sprite.set_shader_program(load_shader_program(vertex_shader, b_frag_shader, vs, bfs));
+    base_sprite.set_shader_program(load_shader_program(vertex_shader, frag_shader, vs, fs));
     LOG("COMPILED SHADERS");
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    Verts verts;
-    read_data_file("const/data/square.txt", verts);
-    GLuint vao, vbo, vbot, ebo;
-    load_vertices(verts, vao, vbo, vbot, ebo);    
+    read_data_file("const/data/square.txt", backup_sprite.get_verts());
+    read_data_file("const/data/square.txt", base_sprite.get_verts());
+    load_vertices(backup_sprite);
+    load_vertices(base_sprite);
     LOG("LOADED VERTEX DATA");
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    GLuint texture;
-    load_image("src/img/dggl.png", texture);    
-    glUseProgram(shader_program);
-    GLuint uniform = glGetUniformLocation(shader_program, "our_texture");
+    load_image("src/img/dggl.png", base_sprite.get_texture());    
+    glUseProgram(base_sprite.get_shader_program());
+    GLuint uniform = glGetUniformLocation(base_sprite.get_shader_program(), "our_texture");
     glUniform1i(uniform, 0);    
     LOG("TEXTURES LOADED");
     //////////////////////////////////////////////////////////////////////////////////////////////////
     glClearColor(0.7f, 0.7f, 0.7f, 1.0f);    
 
-    run_main_loop(app_config, window, shader_program, verts, vao, ebo, texture);
+    std::vector<Sprite> sprites;
+    sprites.push_back(backup_sprite);
+    sprites.push_back(base_sprite);
+
+    run_main_loop(window, sprites);
     
     glfwTerminate();
     return 0;
