@@ -12,9 +12,20 @@
 #include <vector>
 #include "verts.h"
 #include "sprite.h"
+#include "../stb_image.h"
+
+void load_vertices(Sprite&);
+
+void load_image(const char*, GLuint&);
+
+void read_data_file(const char*, Verts&);
+
+void run_main_loop(GLFWwindow*, std::vector<Sprite>&);
+
+GLFWwindow* start_window(AppConfig);
 
 std::string read_shader_file(const char*);
 
-void read_data_file(const char*, Verts&);
+GLuint load_shader_program(GLuint&, GLuint&, std::string, std::string);
 
 #endif
