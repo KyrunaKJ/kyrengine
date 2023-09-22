@@ -1,20 +1,23 @@
 #ifndef MAIN_PROGRAM_H
-#define MAIN_PROGRAM_H
+#define MAIN_PROGRAM_H  
 
+#include <unistd.h>
 #include <GL/glew.h>
+#include <GL/glut.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <GLFW/glfw3.h>
 #include <iostream>
-#include "shader_reader.h"
-#include "shape.h"
-#include "shape_instance.h"
+#include <fstream>
+#include <sstream>
+#include <string>
+#include <vector>
+#include "verts.h"
+#include "sprite.h"
 
-vector<string> get_dir_files(string&);
-GLFWwindow* StartWindow();
-vector<GLuint> LoadShaders();
-void InitializeShapes(vector<Shape>&, vector<string>&);
-void RenderShapes(vector<vector<ShapeInstance>> &, vector<GLuint>&, float, float);
-void RenderSimpleColorShapes(GLuint, vector<ShapeInstance>&, float, float);
-void RenderTextureShapes(GLuint, vector<ShapeInstance>&, float, float);
-void RunMainLoop(GLFWwindow*, vector<vector<ShapeInstance>> &, vector<GLuint>&);
+std::string read_shader_file(const char*);
+
+void read_data_file(const char*, Verts&);
 
 #endif
