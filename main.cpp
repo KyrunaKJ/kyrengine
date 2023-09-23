@@ -58,7 +58,7 @@ int main() {
     load_vertices(base_sprite);
     LOG("LOADED VERTEX DATA");
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    load_image("src/img/dggl.png", base_sprite.get_texture());    
+    load_image("src/img/smile.png", base_sprite.get_texture());    
     glUseProgram(base_sprite.get_shader_program());
     GLuint uniform = glGetUniformLocation(base_sprite.get_shader_program(), "our_texture");
     glUniform1i(uniform, 0);    
@@ -66,10 +66,12 @@ int main() {
     //////////////////////////////////////////////////////////////////////////////////////////////////
     glClearColor(0.7f, 0.7f, 0.7f, 1.0f);    
     std::vector<Sprite> sprites;
-    base_sprite.set_movement(glm::vec3(1.0f, 0.1f, 0.0f));
+    base_sprite.set_movement(glm::vec3(1.5f, 0.9f, 0.0f));
     //backup_sprite.set_movement(glm::vec3(-1.0f, 0.0f, 0.0f));
     backup_sprite.is_background = true;
     base_sprite.is_background = false;        
+    base_sprite.set_rotation(3.14f);
+    backup_sprite.set_rotation(0.0f);
     sprites.push_back(backup_sprite);
     sprites.push_back(base_sprite);
     run_main_loop(window, app_config, sprites);    

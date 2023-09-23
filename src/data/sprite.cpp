@@ -6,12 +6,18 @@ void Sprite::render() {
 
     GLuint mvp_location = glGetUniformLocation(shader_program, "mvp");
     glUniformMatrix4fv(mvp_location, 1, GL_FALSE, glm::value_ptr(getMVP()));
+
+    // Pass the rotation angle to the shader
+    GLuint rotation_location = glGetUniformLocation(shader_program, "rotation");
+    glUniform1f(rotation_location, rotation_angle);
+
     glBindTexture(GL_TEXTURE_2D, texture);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
     glDrawElements(GL_TRIANGLES, vertices.indices.size(), GL_UNSIGNED_INT, 0);
 
     glBindVertexArray(0);
 }
+
 
 void Sprite::move(glm::vec3 movement) {
     set_position(get_verts().position + movement);
@@ -90,6 +96,10 @@ float Sprite::get_height() const {
     return maxY - minY;
 }
 
+float Sprite::get_rotation() const {
+    return rotation_angle;
+}
+
 	
 void Sprite::set_vao(GLuint value) {
     vao = value;
@@ -125,4 +135,8 @@ void Sprite::set_position(glm::vec3 value) {
 
 void Sprite::set_movement(glm::vec3 value) {
     movement = value;
+}
+
+void Sprite::set_rotation(float value) {
+    rotation_angle = value;
 }

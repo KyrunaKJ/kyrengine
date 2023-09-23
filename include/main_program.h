@@ -12,6 +12,7 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <cmath>
 #include "verts.h"
 #include "sprite.h"
 #include "../stb_image.h"

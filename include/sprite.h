@@ -44,6 +44,8 @@ public:
     }
     float get_width() const;
     float get_height() const;
+    float get_rotation() const;
+    void set_rotation(float);
     void set_vao(GLuint);
     void set_vbo(GLuint);
     void set_vbot(GLuint);
@@ -62,6 +64,7 @@ private:
     glm::mat4 mvp, model, projection;
     glm::vec3 movement;
     Verts vertices;
+    float rotation_angle;
 };
 
 #endif

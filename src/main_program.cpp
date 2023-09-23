@@ -141,7 +141,7 @@ void run_main_loop(GLFWwindow* window, AppConfig& app_config, std::vector<Sprite
         glClear(GL_COLOR_BUFFER_BIT);
 
         for (Sprite& sprite : sprites) {
-            sprite.render();
+            sprite.render();            
             if (sprite.is_background) continue;
             sprite.move(sprite.get_movement() * deltaTime);
 
@@ -163,6 +163,12 @@ void run_main_loop(GLFWwindow* window, AppConfig& app_config, std::vector<Sprite
             // Check if the sprite has reached the bottom edge
             if (sprite.get_verts().position.y - (sprite.get_height() / 2) <= -app_config.max_y) {
                 sprite.moving_up = true;
+            }
+
+            if (sprite.get_rotation() >= 2 * M_PI) {
+                sprite.set_rotation(0.0f);
+            } else {
+                sprite.set_rotation(sprite.get_rotation() + 0.05f);
             }
 
             // Update movement direction based on bounce
