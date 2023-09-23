@@ -8,7 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 struct Verts {
-    std::vector<float> vertices, tex_coords;
+    std::vector<float> vertices, tex_coords, colors;
     std::vector<GLuint> indices;
     glm::vec3 position;
 };

@@ -113,7 +113,7 @@ GLuint load_shader_program(GLuint& vertex_shader, GLuint& frag_shader, std::stri
     return shader_program;
 }
 
-GLFWwindow* start_window(AppConfig app_config) {    
+GLFWwindow* start_window(AppConfig& app_config) {    
     glfwInit();
     glfwWindowHint(GLFW_ALPHA_BITS, 8); // 8 bits for alpha channel
     GLFWwindow* window = glfwCreateWindow(app_config.window_width, app_config.window_height, "OpenGL Textures", NULL, NULL);
@@ -126,12 +126,57 @@ GLFWwindow* start_window(AppConfig app_config) {
     return window;
 }
 
-void run_main_loop(GLFWwindow* window, std::vector<Sprite>& sprites) {
-    while(!glfwWindowShouldClose(window)) {
+void run_main_loop(GLFWwindow* window, AppConfig& app_config, std::vector<Sprite>& sprites) {
+    auto startTime = std::chrono::high_resolution_clock::now();
+    float deltaTime = 0.0f; // Time elapsed since the last frame
+
+    float speed_x = 1.0f;   // Movement speed
+    float speed_y = 0.15f;   // Movement speed
+    
+    while (!glfwWindowShouldClose(window)) {
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        deltaTime = std::chrono::duration<float>(currentTime - startTime).count();
+        startTime = currentTime;
+
         glClear(GL_COLOR_BUFFER_BIT);
 
-        for(Sprite sprite : sprites) {            
+        for (Sprite& sprite : sprites) {
             sprite.render();
+            if (sprite.is_background) continue;
+            sprite.move(sprite.get_movement() * deltaTime);
+
+            // Check if the sprite has reached the right edge
+            if (sprite.get_verts().position.x + (sprite.get_width() / 2)  >= app_config.max_x) {
+                sprite.moving_right = false;
+            }            
+
+            // Check if the sprite has reached the left edge
+            if (sprite.get_verts().position.x - (sprite.get_width() / 2) <= -app_config.max_x) {
+                sprite.moving_right = true;
+            }
+
+            // Check if the sprite has reached the top edge
+            if (sprite.get_verts().position.y + (sprite.get_height() / 2)  >= app_config.max_y) {
+                sprite.moving_up = false;
+            }            
+
+            // Check if the sprite has reached the bottom edge
+            if (sprite.get_verts().position.y - (sprite.get_height() / 2) <= -app_config.max_y) {
+                sprite.moving_up = true;
+            }
+
+            // Update movement direction based on bounce
+            if (sprite.moving_right) {
+                sprite.set_movement(glm::vec3(speed_x, sprite.get_movement().y, 0.0f));
+            } else {
+                sprite.set_movement(glm::vec3(-speed_x, sprite.get_movement().y, 0.0f));
+            }
+
+            if (sprite.moving_up) {
+                sprite.set_movement(glm::vec3(sprite.get_movement().x, speed_y, 0.0f));
+            } else {
+                sprite.set_movement(glm::vec3(sprite.get_movement().x, -speed_y, 0.0f));
+            }
         }
 
         GLenum error = glGetError();
@@ -141,6 +186,8 @@ void run_main_loop(GLFWwindow* window, std::vector<Sprite>& sprites) {
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
     }
 }    
 
