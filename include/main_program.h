@@ -10,6 +10,8 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <chrono>
+#include <thread>
 #include "verts.h"
 #include "sprite.h"
 #include "../stb_image.h"
@@ -20,9 +22,9 @@ void load_image(const char*, GLuint&);
 
 void read_data_file(const char*, Verts&);
 
-void run_main_loop(GLFWwindow*, std::vector<Sprite>&);
+void run_main_loop(GLFWwindow*, AppConfig&, std::vector<Sprite>&);
 
-GLFWwindow* start_window(AppConfig);
+GLFWwindow* start_window(AppConfig&);
 
 std::string read_shader_file(const char*);
 

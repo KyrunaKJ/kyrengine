@@ -4,6 +4,7 @@
 struct AppConfig {
         int window_width;
         int window_height;
+        float max_x, max_y;
 };
 
 #endif

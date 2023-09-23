@@ -4,6 +4,7 @@
 #ifndef LOG(x)
 #define LOG(x) std::cout << x << std::endl;
 #endif
+
 #ifndef INFOLOG(x, y)
 #define INFOLOG(x, y) std::cerr << x << y << std::endl;
 #endif
@@ -26,7 +27,7 @@ int main() {
     config_file.close();
     app_config.window_width = config["windowWidth"];
     app_config.window_height = config["windowHeight"];
-    LOG("CONFIG LOADED");
+    LOG("CONFIG LOADED: Window Width - " << app_config.window_width);
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     GLFWwindow* window = start_window(app_config);
     if (window == nullptr) {
@@ -49,12 +50,15 @@ int main() {
     LOG("COMPILED SHADERS");
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     read_data_file("const/data/square.txt", backup_sprite.get_verts());
+    for (float& value : backup_sprite.get_verts().vertices) {
+        value *= 2.0f;
+    }
     read_data_file("const/data/square.txt", base_sprite.get_verts());
     load_vertices(backup_sprite);
     load_vertices(base_sprite);
     LOG("LOADED VERTEX DATA");
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    load_image("src/img/smile.png", base_sprite.get_texture());    
+    load_image("src/img/dggl.png", base_sprite.get_texture());    
     glUseProgram(base_sprite.get_shader_program());
     GLuint uniform = glGetUniformLocation(base_sprite.get_shader_program(), "our_texture");
     glUniform1i(uniform, 0);    
@@ -62,9 +66,13 @@ int main() {
     //////////////////////////////////////////////////////////////////////////////////////////////////
     glClearColor(0.7f, 0.7f, 0.7f, 1.0f);    
     std::vector<Sprite> sprites;
+    base_sprite.set_movement(glm::vec3(1.0f, 0.0f, 0.0f));
+    //backup_sprite.set_movement(glm::vec3(-1.0f, 0.0f, 0.0f));
+    backup_sprite.moving_right = false;
+    
     sprites.push_back(backup_sprite);
     sprites.push_back(base_sprite);
-    run_main_loop(window, sprites);    
+    run_main_loop(window, app_config, sprites);    
     glfwTerminate();
     return 0;
 }

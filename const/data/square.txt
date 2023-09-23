@@ -1,8 +1,8 @@
-// Vertex positions (x y z) and texture coordinates (u v)
-0.5 0.5 0.0 1.0 1.0
-0.5 -0.5 0.0 1.0 0.0
+// Vertex positions (x y z), colors (r g b), and texture coordinates (u v)
+ 0.5  0.5 0.0 1.0 1.0
+ 0.5 -0.5 0.0 1.0 0.0
 -0.5 -0.5 0.0 0.0 0.0
--0.5 0.5 0.0 0.0 1.0
+-0.5  0.5 0.0 0.0 1.0
 
 // Vertex indices (0-based)
 0 1 3
