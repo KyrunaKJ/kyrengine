@@ -43,6 +43,7 @@ public:
         return projection * model;
     }
     float get_width() const;
+    float get_height() const;
     void set_vao(GLuint);
     void set_vbo(GLuint);
     void set_vbot(GLuint);
@@ -53,6 +54,8 @@ public:
     void set_position(glm::vec3);
     void set_movement(glm::vec3);
     bool moving_right;
+    bool moving_up;
+    bool is_background;
 
 private:
     GLuint vao, vbo, vbot, ebo, texture, shader_program;

@@ -66,10 +66,10 @@ int main() {
     //////////////////////////////////////////////////////////////////////////////////////////////////
     glClearColor(0.7f, 0.7f, 0.7f, 1.0f);    
     std::vector<Sprite> sprites;
-    base_sprite.set_movement(glm::vec3(1.0f, 0.0f, 0.0f));
+    base_sprite.set_movement(glm::vec3(1.0f, 0.1f, 0.0f));
     //backup_sprite.set_movement(glm::vec3(-1.0f, 0.0f, 0.0f));
-    backup_sprite.moving_right = false;
-    
+    backup_sprite.is_background = true;
+    base_sprite.is_background = false;        
     sprites.push_back(backup_sprite);
     sprites.push_back(base_sprite);
     run_main_loop(window, app_config, sprites);    

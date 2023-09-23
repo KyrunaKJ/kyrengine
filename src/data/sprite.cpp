@@ -69,6 +69,27 @@ float Sprite::get_width() const {
     // Calculate and return the width
     return maxX - minX;
 }
+
+float Sprite::get_height() const {
+    // Calculate the sprite's height based on its vertices
+    float minY = std::numeric_limits<float>::max();
+    float maxY = std::numeric_limits<float>::min();
+
+    // Iterate through the vertices to find the minimum and maximum Y coordinates
+    for (size_t i = 1; i < vertices.vertices.size(); i += 3) {
+        float y = vertices.vertices[i];
+        if (y < minY) {
+            minY = y;
+        }
+        if (y > maxY) {
+            maxY = y;
+        }
+    }
+
+    // Calculate and return the height
+    return maxY - minY;
+}
+
 	
 void Sprite::set_vao(GLuint value) {
     vao = value;

@@ -130,7 +130,8 @@ void run_main_loop(GLFWwindow* window, AppConfig& app_config, std::vector<Sprite
     auto startTime = std::chrono::high_resolution_clock::now();
     float deltaTime = 0.0f; // Time elapsed since the last frame
 
-    float speed = 1.0f;   // Movement speed
+    float speed_x = 1.0f;   // Movement speed
+    float speed_y = 0.15f;   // Movement speed
     
     while (!glfwWindowShouldClose(window)) {
         auto currentTime = std::chrono::high_resolution_clock::now();
@@ -140,8 +141,9 @@ void run_main_loop(GLFWwindow* window, AppConfig& app_config, std::vector<Sprite
         glClear(GL_COLOR_BUFFER_BIT);
 
         for (Sprite& sprite : sprites) {
-            sprite.move(sprite.get_movement() * deltaTime);
             sprite.render();
+            if (sprite.is_background) continue;
+            sprite.move(sprite.get_movement() * deltaTime);
 
             // Check if the sprite has reached the right edge
             if (sprite.get_verts().position.x + (sprite.get_width() / 2)  >= app_config.max_x) {
@@ -153,13 +155,29 @@ void run_main_loop(GLFWwindow* window, AppConfig& app_config, std::vector<Sprite
                 sprite.moving_right = true;
             }
 
+            // Check if the sprite has reached the top edge
+            if (sprite.get_verts().position.y + (sprite.get_height() / 2)  >= app_config.max_y) {
+                sprite.moving_up = false;
+            }            
+
+            // Check if the sprite has reached the bottom edge
+            if (sprite.get_verts().position.y - (sprite.get_height() / 2) <= -app_config.max_y) {
+                sprite.moving_up = true;
+            }
+
             // Update movement direction based on bounce
             if (sprite.moving_right) {
-                sprite.set_movement(glm::vec3(speed, 0.0f, 0.0f));
+                sprite.set_movement(glm::vec3(speed_x, sprite.get_movement().y, 0.0f));
             } else {
-                sprite.set_movement(glm::vec3(-speed, 0.0f, 0.0f));
+                sprite.set_movement(glm::vec3(-speed_x, sprite.get_movement().y, 0.0f));
+            }
+
+            if (sprite.moving_up) {
+                sprite.set_movement(glm::vec3(sprite.get_movement().x, speed_y, 0.0f));
+            } else {
+                sprite.set_movement(glm::vec3(sprite.get_movement().x, -speed_y, 0.0f));
+            }
         }
-    }
 
         GLenum error = glGetError();
         if (error != GL_NO_ERROR) {
